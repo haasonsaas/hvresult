@@ -23,6 +23,7 @@ import (
 	vault "github.com/hashicorp/vault/api"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"github.com/threatkey-oss/hvresult/internal"
 	"github.com/threatkey-oss/hvresult/internal/gitops"
 )
 
@@ -41,14 +42,14 @@ start using pull requests for Vault policy change management.`,
 		)
 		vc, err := vault.NewClient(vault.DefaultConfig())
 		if err != nil {
-			log.Fatal().Err(err).Msg("error creating Vault client from defaults")
+			log.Fatal().Err(internal.VaultAPIError(err)).Msg("error creating Vault client")
 		}
 		// do the thing that's more error prone first
 		if err := gitops.DownloadAuth(ctx, vc, filepath.Join(directory, "auth")); err != nil {
-			log.Fatal().Err(err).Msg("error downloading auth mounts")
+			log.Fatal().Err(internal.VaultAPIError(err)).Msg("error downloading auth mounts")
 		}
 		if err := gitops.DownloadPolicies(ctx, vc, filepath.Join(directory, "sys", "policies", "acl")); err != nil {
-			log.Fatal().Err(err).Msg("error downloading policies")
+			log.Fatal().Err(internal.VaultAPIError(err)).Msg("error downloading policies")
 		}
 	},
 }

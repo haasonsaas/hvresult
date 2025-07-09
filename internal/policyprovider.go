@@ -43,7 +43,7 @@ func (p *ReadthroughPolicyProvider) GetPolicy(ctx context.Context, name string) 
 	}
 	policyData, err := p.client.Sys().GetPolicyWithContext(ctx, name)
 	if err != nil {
-		return nil, fmt.Errorf("error reading policy from Vault: %w", err)
+		return nil, VaultAPIError(fmt.Errorf("error reading policy from Vault: %w", err))
 	}
 	policy, err := ParsePolicy(policyData, name)
 	if err != nil {
@@ -93,13 +93,13 @@ func (p *ReadthroughPolicyProvider) GetRSoP(ctx context.Context, authThing strin
 		if authThing == p.client.Token() {
 			s, err = p.client.Auth().Token().LookupSelfWithContext(ctx)
 			if err != nil {
-				return nil, fmt.Errorf("error looking up self: %w", err)
+				return nil, VaultAPIError(fmt.Errorf("error looking up self: %w", err))
 			}
 		} else {
 			// errors out without sudo/root
 			s, err = p.client.Auth().Token().LookupWithContext(ctx, authThing)
 			if err != nil {
-				return nil, fmt.Errorf("error looking up token: %w", err)
+				return nil, VaultAPIError(fmt.Errorf("error looking up token: %w", err))
 			}
 		}
 		var data logicalPolicyData
@@ -110,13 +110,13 @@ func (p *ReadthroughPolicyProvider) GetRSoP(ctx context.Context, authThing strin
 	case TokenAccessor:
 		s, err := p.client.Auth().Token().LookupAccessorWithContext(ctx, authThing)
 		if err != nil {
-			return nil, fmt.Errorf("error looking up token accessor: %w", err)
+			return nil, VaultAPIError(fmt.Errorf("error looking up token accessor: %w", err))
 		}
 		policyNames = s.Auth.Policies
 	case RolePathMaybe:
 		s, err := p.client.Logical().ReadWithContext(ctx, authThing)
 		if err != nil {
-			return nil, fmt.Errorf("error reading guessed role path: %w", err)
+			return nil, VaultAPIError(fmt.Errorf("error reading guessed role path: %w", err))
 		}
 		if s.Data == nil || s.Data["token_policies"] == nil {
 			return nil, fmt.Errorf(".data.token_policies not present in guessed role path")

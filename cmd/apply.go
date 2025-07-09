@@ -23,6 +23,7 @@ import (
 	vault "github.com/hashicorp/vault/api"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"github.com/threatkey-oss/hvresult/internal"
 	"github.com/threatkey-oss/hvresult/internal/gitops"
 )
 
@@ -42,11 +43,11 @@ the state of your Vault server with a GitOps repository.`,
 
 		vc, err := vault.NewClient(vault.DefaultConfig())
 		if err != nil {
-			log.Fatal().Err(err).Msg("error creating Vault client from defaults")
+			log.Fatal().Err(internal.VaultAPIError(err)).Msg("error creating Vault client")
 		}
 
 		if err := gitops.ApplyChanges(ctx, vc, filepath.Join(directory, "auth"), filepath.Join(directory, "sys", "policies", "acl")); err != nil {
-			log.Fatal().Err(err).Msg("error applying changes to Vault")
+			log.Fatal().Err(internal.VaultAPIError(err)).Msg("error applying changes to Vault")
 		}
 		log.Info().Msg("Successfully applied changes to Vault.")
 	},

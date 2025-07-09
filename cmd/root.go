@@ -71,19 +71,19 @@ By default, hvresult will evaluate and print the RSoP for each.
 		ctx := context.Background()
 		vc, err := vault.NewClient(vault.DefaultConfig())
 		if err != nil {
-			log.Fatal().Err(err).Msg("error creating Vault client from defaults")
+			log.Fatal().Err(internal.VaultAPIError(err)).Msg("error creating Vault client")
 		}
 		if vc.Token() == "" {
 			log.Fatal().Msg("Vault client from defaults has no token - VAULT_TOKEN environment variable is probably empty")
 		}
 		pp, err := internal.NewReadthroughPolicyProvider("", vc)
 		if err != nil {
-			log.Fatal().Err(err).Msg("error creating PolicyProvider")
+			log.Fatal().Err(internal.VaultAPIError(err)).Msg("error creating PolicyProvider")
 		}
 		for _, arg := range args {
 			rsop, err := pp.GetRSoP(ctx, arg)
 			if err != nil {
-				log.Fatal().Err(err).Msg("error generating RSoP")
+				log.Fatal().Err(internal.VaultAPIError(err)).Msg("error generating RSoP")
 			}
 			log.Debug().EmbedObject(rsop).Msgf("printing as %s to stdout", flagFormat)
 			capmap := rsop.GetCapabilityMap()
