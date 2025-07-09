@@ -72,7 +72,15 @@ func DownloadAuth(ctx context.Context, vc *vault.Client, authDirectory string) e
 			rolePaths = map[string]string{
 				abspath + "/users": abspath + "/users/",
 			}
+		case "userpass":
+			rolePaths = map[string]string{
+				abspath + "/users": abspath + "/users/",
+			}
 		case "token":
+			rolePaths = map[string]string{
+				abspath + "/roles": abspath + "/roles/",
+			}
+		case "tls":
 			rolePaths = map[string]string{
 				abspath + "/roles": abspath + "/roles/",
 			}
