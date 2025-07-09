@@ -127,7 +127,10 @@ func TestProviderNoCache(t *testing.T) {
 		s := mustSecret(client.Auth().Token().Create(&vault.TokenCreateRequest{
 			Policies: []string{policyName},
 		}))
-		pp.GetRSoP(ctx, s.Auth.ClientToken)
+		_, err = pp.GetRSoP(ctx, s.Auth.ClientToken)
+		if err != nil {
+			t.Fatalf("error getting RSoP: %v", err)
+		}
 	})
 }
 

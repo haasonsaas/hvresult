@@ -67,8 +67,8 @@ func TestApplyChanges(t *testing.T) {
 	if err != nil {
 		t.Errorf("error reading approle role: %v", err)
 	}
-	if approleRole == nil {
-		t.Errorf("approle role is nil")
+	if approleRole == nil || approleRole.Data == nil {
+		t.Errorf("approle role is nil or data is nil")
 	}
 	if policies, ok := approleRole.Data["token_policies"].([]interface{}); !ok || len(policies) == 0 || policies[0] != "test-policy-1" {
 		t.Errorf("approle role token_policies not correct: %v", policies)
@@ -127,8 +127,8 @@ func TestApplyChanges(t *testing.T) {
 	if err != nil {
 		t.Errorf("error reading approle role: %v", err)
 	}
-	if approleRole == nil {
-		t.Errorf("approle role is nil")
+	if approleRole == nil || approleRole.Data == nil {
+		t.Errorf("approle role is nil or data is nil")
 	}
 	if policies, ok := approleRole.Data["token_policies"].([]interface{}); !ok || len(policies) == 0 || policies[0] != "test-policy-3" {
 		t.Errorf("approle role token_policies not correct: %v", policies)
@@ -167,8 +167,8 @@ func TestApplyChanges(t *testing.T) {
 	if err != nil {
 		t.Errorf("idempotency: error reading approle role: %v", err)
 	}
-	if approleRole == nil {
-		t.Errorf("idempotency: approle role is nil")
+	if approleRole == nil || approleRole.Data == nil {
+		t.Errorf("idempotency: approle role is nil or data is nil")
 	}
 	if policies, ok := approleRole.Data["token_policies"].([]interface{}); !ok || len(policies) == 0 || policies[0] != "test-policy-3" {
 		t.Errorf("idempotency: approle role token_policies not correct: %v", policies)
